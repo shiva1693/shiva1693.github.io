@@ -4,7 +4,6 @@ const DATA = {
       name: "Shivkumar Hiremath",
       role: "Lead Test Automation Engineer — SDET — Lead QA Analyst",
       location: "London, UK",
-      phone: "+44 7312172149",
       email: "shivkumar.hiremath16@gmail.com",
       linkedin: "https://www.linkedin.com/in/shivkumar-hiremath",
       github: "https://github.com/shiva1693",
@@ -20,14 +19,14 @@ const DATA = {
       "BDD","POM","Data-Driven Testing","Python","Java","JavaScript","Shell","Jenkins","GitHub Actions","Maven",
       "Terraform","Ansible","Linux","Docker","Kubernetes","AWS","Apache","Tomcat",
       "MySQL","MongoDB","Hive","Kafka",
-      "Functional/Regression/Exploratory/Cross-Browser Testing"
+      "Functional","Regression","Exploratory","Cross-Browser Testing"
     ],
   
     experience: [
       {
         company: "Rakuten",
         title: "Senior Automation Engineer",
-        location: "London (AWS infra)",
+        location: "Bengaluru,India",
         period: "Apr 2021 – Apr 2025",
         bullets: [
           "Led exploratory, smoke and regression testing across Agile projects; reduced production issues by 40%.",
@@ -43,7 +42,7 @@ const DATA = {
       {
         company: "TIBCO",
         title: "QA Engineer",
-        location: "",
+        location: "Pune, India",
         period: "Nov 2017 – Apr 2021",
         bullets: [
           "Executed 200+ test cases across functional, regression and exploratory testing.",

@@ -2,22 +2,10 @@
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
-function chip(text, href){
-  const el = document.createElement(href ? "a" : "span");
-  el.className = "chip"; el.textContent = text;
-  if (href){ el.href = href; el.target="_blank"; el.rel="noopener noreferrer"; }
-  return el;
-}
-
-/* HERO */
+/* HERO (name & role only; chips are static in HTML) */
 (function renderHero(p){
   $("#name").textContent = p.name;
   $("#role").textContent = p.role;
-  const chips = $("#chips");
-  chips.append(chip(p.location));
-  chips.append(chip(p.email, `mailto:${p.email}`));
-  chips.append(chip("LinkedIn", p.linkedin));
-  chips.append(chip("GitHub", p.github));
   $("#emailLink").href = `mailto:${p.email}`;
   $("#emailLink").textContent = p.email;
 })(DATA.person);
@@ -111,50 +99,47 @@ function chip(text, href){
   document.addEventListener("scroll", onScroll, {passive:true}); onScroll();
 })();
 
-/* --- Formspree AJAX submit --- */
+/* Formspree AJAX submit */
 (function wireContactForm(){
-    const form = document.getElementById("contactForm");
-    const alertBox = document.getElementById("contactAlert");
-    if (!form) return;
-  
-    function showAlert(msg, ok=true){
-      alertBox.textContent = msg;
-      alertBox.className = "alert " + (ok ? "alert--ok" : "alert--err");
-      alertBox.hidden = false;
+  const form = document.getElementById("contactForm");
+  const alertBox = document.getElementById("contactAlert");
+  if (!form) return;
+
+  function showAlert(msg, ok=true){
+    alertBox.textContent = msg;
+    alertBox.className = "alert " + (ok ? "alert--ok" : "alert--err");
+    alertBox.hidden = false;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    alertBox.hidden = true;
+
+    if (!form.name.value.trim() || !form.email.value.trim() || !form.message.value.trim()) {
+      showAlert("Please fill out all required fields.", false);
+      return;
     }
-  
-    form.addEventListener("submit", async (e) => {
-      // If you prefer the default HTML POST+redirect behavior, delete this listener
-      e.preventDefault();
-      alertBox.hidden = true;
-  
-      // Basic client-side validation
-      if (!form.name.value.trim() || !form.email.value.trim() || !form.message.value.trim()) {
-        showAlert("Please fill out all required fields.", false);
-        return;
+
+    try {
+      const res = await fetch(form.action, {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      });
+
+      if (res.ok) {
+        form.reset();
+        showAlert("Thanks! Your message has been sent.");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        const err = data?.errors?.[0]?.message || "Something went wrong. Please try again later.";
+        showAlert(err, false);
       }
-  
-      try {
-        const res = await fetch(form.action, {
-          method: "POST",
-          headers: { "Accept": "application/json" },
-          body: new FormData(form)
-        });
-  
-        if (res.ok) {
-          form.reset();
-          showAlert("Thanks! Your message has been sent.");
-        } else {
-          const data = await res.json().catch(() => ({}));
-          const err = data?.errors?.[0]?.message || "Something went wrong. Please try again later.";
-          showAlert(err, false);
-        }
-      } catch (err) {
-        showAlert("Network error. Please check your connection and try again.", false);
-      }
-    });
-  })();
-  
+    } catch (err) {
+      showAlert("Network error. Please check your connection and try again.", false);
+    }
+  });
+})();
 
 /* footer year */
 document.getElementById("year").textContent = new Date().getFullYear();
